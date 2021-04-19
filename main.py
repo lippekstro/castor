@@ -1,7 +1,5 @@
 import xml.dom.minidom
 
-# C:\\Users\\felli\\Downloads\\scans\\resultados_semfirewall.xml
-
 prompt = ">"
 checker = True
 
