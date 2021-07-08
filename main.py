@@ -1,6 +1,6 @@
 import xml.dom.minidom
 
-# C:\\Users\\felli\\Downloads\\scans\\resultados_semfirewall.xml
+# C:\\Users\\felli\\Downloads\dam_reports\\
 
 prompt = ">"
 checker = True
@@ -24,12 +24,15 @@ app_lan_dmz = [21, 53, 80, 143, 443, 993, 1433]
 
 def xml_reading(analysis):
     xmldoc = xml.dom.minidom.parse(analysis)
-    itemList = xmldoc.getElementsByTagName('port')  # pega os itens da tag port do documento xml e joga na lista
-    open = []
-    for item in itemList:
-        if item.childNodes[0].attributes['state'].value == 'open':  # considera apenas as portas abertas
-            open.append(item.attributes['portid'].value)
-            final = list(map(int, open))  # converte para valores inteiros
+    itemlist = xmldoc.getElementsByTagName('port')  # pega os itens da tag port do documento xml e joga na lista
+    opened = []
+    final = []
+    for item in itemlist:
+        if item.childNodes[0].attributes['state'].value == 'open' or item.childNodes[0].attributes[
+            'state'].value == 'closed':
+            opened.append(item.attributes['portid'].value)
+            final = list(map(int, opened))  # converte para valores inteiros
+            final.sort()
     return final
 
 
@@ -56,23 +59,29 @@ while checker:
         print(f"The report of your network: ", wan_lan_analysis)
 
         if lan_wan_no_dmz == lan_wan_analysis:
+            print("------------------")
+            print("LAN -> WAN status:")
             print("Both are equals, your network (lan->wan) was correctly configured")
         else:
             print("------------------")
+            print("LAN -> WAN status:")
             print("Lan->Wan analysis and recommended model are different")
             print("Vulnerability Level (DAM): Medium")
             print("we recommend that you close the following ports: ")
-            lan_wan_close = list(set(lan_wan_analysis)-set(lan_wan_no_dmz))
+            lan_wan_close = list(set(lan_wan_analysis) - set(lan_wan_no_dmz))
             lan_wan_close.sort()
             print("lan->wan: ", lan_wan_close)
         if wan_lan_no_dmz == wan_lan_analysis:
+            print("------------------")
+            print("WAN -> LAN status:")
             print("Both are equals, your network (wan->lan) was correctly configured")
         else:
             print("------------------")
+            print("WAN -> LAN status:")
             print("Wan->Lan analysis and recommended model are different")
             print("Vulnerability Level (DAM): High")
             print("we recommend that you close the following ports: ")
-            wan_lan_close = list(set(wan_lan_analysis)-set(wan_lan_no_dmz))
+            wan_lan_close = list(set(wan_lan_analysis) - set(wan_lan_no_dmz))
             wan_lan_close.sort()
             print("wan->lan: ", wan_lan_close)
     elif model == "2":
@@ -117,9 +126,12 @@ while checker:
         print(f"The report of your network: ", lan_dmz_analysis)
 
         if dmz_lan_wan == lan_wan_analysis:
+            print("------------------")
+            print("LAN -> WAN status:")
             print("Both are equals, your network (lan->wan) was correctly configured")
         else:
             print("------------------")
+            print("LAN -> WAN status:")
             print("Lan->Wan analysis and recommended model are different")
             print("Vulnerability Level (DAM): Medium")
             print("we recommend that you close the following ports: ")
@@ -127,9 +139,12 @@ while checker:
             lan_wan_close.sort()
             print("lan->wan: ", lan_wan_close)
         if dmz_wan_lan == wan_lan_analysis:
+            print("------------------")
+            print("WAN -> LAN status:")
             print("Both are equals, your network (wan->lan) was correctly configured")
         else:
             print("------------------")
+            print("WAN -> LAN status:")
             print("Wan->Lan analysis and recommended model are different")
             print("Vulnerability Level (DAM): High")
             print("we recommend that you close the following ports: ")
@@ -138,9 +153,12 @@ while checker:
             print("wan->lan: ", wan_lan_close)
 
         if dmz_wan_dmz == wan_dmz_analysis:
+            print("------------------")
+            print("WAN -> DMZ status:")
             print("Both are equals, your network (wan->dmz) was correctly configured")
         else:
             print("------------------")
+            print("WAN -> DMZ status:")
             print("Wan->Dmz analysis and recommended model are different")
             print("Vulnerability Level (DAM): Medium")
             print("we recommend that you close the following ports: ")
@@ -148,9 +166,12 @@ while checker:
             wan_dmz_close.sort()
             print("wan->dmz: ", wan_dmz_close)
         if dmz_dmz_wan == dmz_wan_analysis:
+            print("------------------")
+            print("DMZ -> WAN status:")
             print("Both are equals, your network (dmz->wan) was correctly configured")
         else:
             print("------------------")
+            print("DMZ -> WAN status:")
             print("Dmz->Wan analysis and recommended model are different")
             print("Vulnerability Level (DAM): Low")
             print("we recommend that you close the following ports: ")
@@ -159,9 +180,12 @@ while checker:
             print("dmz->wan: ", dmz_wan_close)
 
         if dmz_dmz_lan == dmz_lan_analysis:
+            print("------------------")
+            print("DMZ -> LAN status:")
             print("Both are equals, your network (dmz->lan) was correctly configured")
         else:
             print("------------------")
+            print("DMZ -> LAN status:")
             print("Dmz->Lan analysis and recommended model are different")
             print("Vulnerability Level (DAM): High")
             print("we recommend that you close the following ports: ")
@@ -169,9 +193,12 @@ while checker:
             dmz_lan_close.sort()
             print("dmz->lan: ", dmz_lan_close)
         if dmz_lan_dmz == lan_dmz_analysis:
+            print("------------------")
+            print("LAN -> DMZ status:")
             print("Both are equals, your network (lan->dmz) was correctly configured")
         else:
             print("------------------")
+            print("LAN -> DMZ status:")
             print("Lan->Dmz analysis and recommended model are different")
             print("Vulnerability Level (DAM): Medium")
             print("we recommend that you close the following ports: ")
@@ -182,7 +209,7 @@ while checker:
         checker = False
         print("Enter your Corporate Application port number: ")
         corp_app_port = int(input(prompt))
-        #print("Enter your Database port number: ")
+        # print("Enter your Database port number: ")
         db_port = 1433
 
         print("Enter LAN->WAN analysis path: ")
@@ -235,9 +262,12 @@ while checker:
         print(f"The report of your network: ", lan_dmz_analysis)
 
         if dmz_lan_wan == lan_wan_analysis:
+            print("------------------")
+            print("LAN -> WAN status:")
             print("Both are equals, your network (lan->wan) was correctly configured")
         else:
             print("------------------")
+            print("LAN -> WAN status:")
             print("Lan->Wan analysis and recommended model are different")
             print("Vulnerability Level (DAM): Medium")
             print("we recommend that you close the following ports: ")
@@ -245,9 +275,12 @@ while checker:
             lan_wan_close.sort()
             print("lan->wan: ", lan_wan_close)
         if dmz_wan_lan == wan_lan_analysis:
+            print("------------------")
+            print("WAN -> LAN status:")
             print("Both are equals, your network (wan->lan) was correctly configured")
         else:
             print("------------------")
+            print("WAN -> LAN status:")
             print("Wan->Lan analysis and recommended model are different")
             print("Vulnerability Level (DAM): High")
             print("we recommend that you close the following ports: ")
@@ -256,9 +289,12 @@ while checker:
             print("wan->lan: ", wan_lan_close)
 
         if dmz_wan_dmz == wan_dmz_analysis:
+            print("------------------")
+            print("WAN -> DMZ status:")
             print("Both are equals, your network (wan->dmz) was correctly configured")
         else:
             print("------------------")
+            print("WAN -> DMZ status:")
             print("Wan->Dmz analysis and recommended model are different")
             print("Vulnerability Level (DAM): Medium")
             print("we recommend that you close the following ports: ")
@@ -266,9 +302,12 @@ while checker:
             wan_dmz_close.sort()
             print("wan->dmz: ", wan_dmz_close)
         if dmz_dmz_wan == dmz_wan_analysis:
+            print("------------------")
+            print("DMZ -> WAN status:")
             print("Both are equals, your network (dmz->wan) was correctly configured")
         else:
             print("------------------")
+            print("DMZ -> WAN status:")
             print("Dmz->Wan analysis and recommended model are different")
             print("Vulnerability Level (DAM): Low")
             print("we recommend that you close the following ports: ")
@@ -277,9 +316,12 @@ while checker:
             print("dmz->wan: ", dmz_wan_close)
 
         if app_dmz_lan == dmz_lan_analysis:
+            print("------------------")
+            print("DMZ -> LAN status:")
             print("Both are equals, your network (dmz->lan) was correctly configured")
         else:
             print("------------------")
+            print("DMZ -> LAN status:")
             print("Dmz->Lan analysis and recommended model are different")
             print("Vulnerability Level (DAM): High")
             print("we recommend that you close the following ports: ")
@@ -287,9 +329,12 @@ while checker:
             dmz_lan_close.sort()
             print("dmz->lan: ", dmz_lan_close)
         if app_lan_dmz == lan_dmz_analysis:
+            print("------------------")
+            print("LAN -> DMZ status:")
             print("Both are equals, your network (lan->dmz) was correctly configured")
         else:
             print("------------------")
+            print("LAN -> DMZ status:")
             print("Lan->Dmz analysis and recommended model are different")
             print("Vulnerability Level (DAM): Medium")
             print("we recommend that you close the following ports: ")
