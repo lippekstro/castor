@@ -1,4 +1,34 @@
 import xml.dom.minidom
+import datetime
+from fpdf import FPDF
+
+
+class PDF(FPDF):
+    def header(self):
+        # Select Arial bold 15
+        self.set_font('Arial', 'B', 15)
+        # Move to the right
+        self.cell(80)
+        # Framed title
+        self.cell(30, 10, 'Castor Network Report', 1, 0, 'C')
+        # Line break
+        self.ln(20)
+
+
+class PDF(FPDF):
+    def footer(self):
+        # Go to 1.5 cm from bottom
+        self.set_y(-15)
+        # Select Arial italic 8
+        self.set_font('Arial', 'I', 8)
+        # Print centered page number
+        self.cell(0, 10, 'Page %s' % self.page_no(), 0, 0, 'C')
+
+        ct = datetime.datetime.now()
+        d = ct.strftime("%m/%d/%Y, %H:%M:%S")
+        pdf.set_x(150)
+        pdf.cell(0, 10, d, 0, 0, 'R')
+
 
 # C:\\Users\\felli\\Downloads\\dam_reports\\
 
@@ -24,17 +54,28 @@ app_lan_dmz = [21, 53, 80, 143, 443, 993, 1433]
 
 def xml_reading(analysis):
     xmldoc = xml.dom.minidom.parse(analysis)
-    itemlist = xmldoc.getElementsByTagName('port')  # pega os itens da tag port do documento xml e joga na lista
+    itemlist = xmldoc.getElementsByTagName('port')
     opened = []
     final = []
     for item in itemlist:
-        if item.childNodes[0].attributes['state'].value == 'open' or item.childNodes[0].attributes[
-            'state'].value == 'closed':
+        if item.childNodes[0].attributes['state'].value == 'open' \
+                or item.childNodes[0].attributes['state'].value == 'closed':
             opened.append(item.attributes['portid'].value)
-            final = list(map(int, opened))  # converte para valores inteiros
+            final = list(map(int, opened))
             final.sort()
     return final
 
+
+pdf = PDF(orientation='P', unit='mm', format='A4')
+pdf.add_page()
+pdf.set_auto_page_break(True)
+pdf.set_xy(0.0, 0.0)
+pdf.set_font('Arial', 'B', 16)
+pdf.set_text_color(0, 0, 255)
+pdf.cell(w=210.0, h=40.0, align='C', txt="CASTOR NETWORK REPORT", border=0)
+pdf.set_font('Arial', '', 12)
+pdf.set_text_color(0, 0, 0)
+pdf.set_xy(10, 30)
 
 while checker:
     print("Which model you want check? ")
@@ -68,6 +109,13 @@ while checker:
             print("------------------")
             print("LAN -> WAN status:")
             print("Your network (lan->wan) was correctly configured")
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='LAN => WAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Your network (lan=>wan) was correctly configured')
+            pdf.ln(5)
         else:
             print("------------------")
             print("LAN -> WAN status:")
@@ -75,10 +123,31 @@ while checker:
             print("Vulnerability Level (DAM): Medium")
             print("we recommend that you close the following ports: ")
             print("lan->wan: ", result_lan_wan)
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='LAN => WAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Lan=>Wan analysis and recommended model are different')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Vulnerability Level (DAM): Medium')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='we recommend that you close the following ports: ')
+            pdf.ln(5)
+            mystr = ', '.join(map(str, result_lan_wan))
+            pdf.cell(0, 0, mystr)
+            pdf.ln(5)
         if result_wan_lan == []:
             print("------------------")
             print("WAN -> LAN status:")
             print("Your network (wan->lan) was correctly configured")
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='WAN => LAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Your network (wan=>lan) was correctly configured')
+            pdf.ln(5)
         else:
             print("------------------")
             print("WAN -> LAN status:")
@@ -86,6 +155,20 @@ while checker:
             print("Vulnerability Level (DAM): High")
             print("we recommend that you close the following ports: ")
             print("wan->lan: ", result_wan_lan)
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='WAN => LAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Wan=>Lan analysis and recommended model are different')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Vulnerability Level (DAM): High')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='we recommend that you close the following ports: ')
+            pdf.ln(5)
+            mystr = ', '.join(map(str, result_wan_lan))
+            pdf.cell(0, 0, mystr)
+            pdf.ln(5)
     elif model == "2":
         checker = False
         print("Enter LAN->WAN analysis path: ")
@@ -149,6 +232,13 @@ while checker:
             print("------------------")
             print("LAN -> WAN status:")
             print("Your network (lan->wan) was correctly configured")
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='LAN => WAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Your network (lan=>wan) was correctly configured')
+            pdf.ln(5)
         else:
             print("------------------")
             print("LAN -> WAN status:")
@@ -156,10 +246,31 @@ while checker:
             print("Vulnerability Level (DAM): Medium")
             print("we recommend that you close the following ports: ")
             print("lan->wan: ", result_lan_wan)
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='LAN => WAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Lan=>Wan analysis and recommended model are different')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Vulnerability Level (DAM): Medium')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='we recommend that you close the following ports: ')
+            pdf.ln(5)
+            mystr = ', '.join(map(str, result_lan_wan))
+            pdf.cell(0, 0, mystr)
+            pdf.ln(5)
         if result_wan_lan == []:
             print("------------------")
             print("WAN -> LAN status:")
             print("Your network (wan->lan) was correctly configured")
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='WAN => LAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Your network (wan=>lan) was correctly configured')
+            pdf.ln(5)
         else:
             print("------------------")
             print("WAN -> LAN status:")
@@ -168,10 +279,30 @@ while checker:
             print("we recommend that you close the following ports: ")
             print("wan->lan: ", result_wan_lan)
 
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='WAN => LAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Wan=>Lan analysis and recommended model are different')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Vulnerability Level (DAM): High')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='we recommend that you close the following ports: ')
+            pdf.ln(5)
+            mystr = ', '.join(map(str, result_wan_lan))
+            pdf.cell(0, 0, mystr)
+            pdf.ln(5)
         if result_wan_dmz == []:
             print("------------------")
             print("WAN -> DMZ status:")
             print("Your network (wan->dmz) was correctly configured")
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='WAN => DMZ status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Your network (wan=>dmz) was correctly configured')
+            pdf.ln(5)
         else:
             print("------------------")
             print("WAN -> DMZ status:")
@@ -179,10 +310,31 @@ while checker:
             print("Vulnerability Level (DAM): Medium")
             print("we recommend that you close the following ports: ")
             print("wan->dmz: ", result_wan_dmz)
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='WAN => DMZ status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Wan=>Dmz analysis and recommended model are different')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Vulnerability Level (DAM): Medium')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='we recommend that you close the following ports: ')
+            pdf.ln(5)
+            mystr = ', '.join(map(str, result_wan_dmz))
+            pdf.cell(0, 0, mystr)
+            pdf.ln(5)
         if result_dmz_wan == []:
             print("------------------")
             print("DMZ -> WAN status:")
             print("Your network (dmz->wan) was correctly configured")
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='DMZ => WAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Your network (dmz=>wan) was correctly configured')
+            pdf.ln(5)
         else:
             print("------------------")
             print("DMZ -> WAN status:")
@@ -191,10 +343,30 @@ while checker:
             print("we recommend that you close the following ports: ")
             print("dmz->wan: ", result_dmz_wan)
 
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='DMZ => WAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Dmz=>Wan analysis and recommended model are different')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Vulnerability Level (DAM): Low')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='we recommend that you close the following ports: ')
+            pdf.ln(5)
+            mystr = ', '.join(map(str, result_dmz_wan))
+            pdf.cell(0, 0, mystr)
+            pdf.ln(5)
         if result_dmz_lan == []:
             print("------------------")
             print("DMZ -> LAN status:")
             print("Your network (dmz->lan) was correctly configured")
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='DMZ => LAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Your network (dmz=>lan) was correctly configured')
+            pdf.ln(5)
         else:
             print("------------------")
             print("DMZ -> LAN status:")
@@ -202,10 +374,31 @@ while checker:
             print("Vulnerability Level (DAM): High")
             print("we recommend that you close the following ports: ")
             print("dmz->lan: ", result_dmz_lan)
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='DMZ => LAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Dmz=>Lan analysis and recommended model are different')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Vulnerability Level (DAM): High')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='we recommend that you close the following ports: ')
+            pdf.ln(5)
+            mystr = ', '.join(map(str, result_dmz_lan))
+            pdf.cell(0, 0, mystr)
+            pdf.ln(5)
         if result_lan_dmz == []:
             print("------------------")
             print("LAN -> DMZ status:")
             print("Your network (lan->dmz) was correctly configured")
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='LAN => DMZ status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Your network (lan=>dmz) was correctly configured')
+            pdf.ln(5)
         else:
             print("------------------")
             print("LAN -> DMZ status:")
@@ -213,6 +406,20 @@ while checker:
             print("Vulnerability Level (DAM): Medium")
             print("we recommend that you close the following ports: ")
             print("lan->dmz: ", result_lan_dmz)
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='LAN => DMZ status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Lan=>Dmz analysis and recommended model are different')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Vulnerability Level (DAM): Medium')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='we recommend that you close the following ports: ')
+            pdf.ln(5)
+            mystr = ', '.join(map(str, result_lan_dmz))
+            pdf.cell(0, 0, mystr)
+            pdf.ln(5)
     elif model == "3":
         checker = False
         print("Enter your Corporate Application port number: ")
@@ -291,6 +498,13 @@ while checker:
             print("------------------")
             print("LAN -> WAN status:")
             print("Your network (lan->wan) was correctly configured")
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='LAN => WAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Your network (lan=>wan) was correctly configured')
+            pdf.ln(5)
         else:
             print("------------------")
             print("LAN -> WAN status:")
@@ -298,10 +512,31 @@ while checker:
             print("Vulnerability Level (DAM): Medium")
             print("we recommend that you close the following ports: ")
             print("lan->wan: ", result_lan_wan)
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='LAN => WAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Lan=>Wan analysis and recommended model are different')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Vulnerability Level (DAM): Medium')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='we recommend that you close the following ports: ')
+            pdf.ln(5)
+            mystr = ', '.join(map(str, result_lan_wan))
+            pdf.cell(0, 0, mystr)
+            pdf.ln(5)
         if result_wan_lan == []:
             print("------------------")
             print("WAN -> LAN status:")
             print("Your network (wan->lan) was correctly configured")
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='WAN => LAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Your network (wan=>lan) was correctly configured')
+            pdf.ln(5)
         else:
             print("------------------")
             print("WAN -> LAN status:")
@@ -310,10 +545,31 @@ while checker:
             print("we recommend that you close the following ports: ")
             print("wan->lan: ", result_wan_lan)
 
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='WAN => LAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Wan=>Lan analysis and recommended model are different')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Vulnerability Level (DAM): High')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='we recommend that you close the following ports: ')
+            pdf.ln(5)
+            mystr = ', '.join(map(str, result_wan_lan))
+            pdf.cell(0, 0, mystr)
+            pdf.ln(5)
+
         if result_wan_dmz == []:
             print("------------------")
             print("WAN -> DMZ status:")
             print("Your network (wan->dmz) was correctly configured")
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='WAN => DMZ status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Your network (wan=>dmz) was correctly configured')
+            pdf.ln(5)
         else:
             print("------------------")
             print("WAN -> DMZ status:")
@@ -321,10 +577,31 @@ while checker:
             print("Vulnerability Level (DAM): Medium")
             print("we recommend that you close the following ports: ")
             print("wan->dmz: ", result_wan_dmz)
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='WAN => DMZ status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Wan=>Dmz analysis and recommended model are different')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Vulnerability Level (DAM): Medium')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='we recommend that you close the following ports: ')
+            pdf.ln(5)
+            mystr = ', '.join(map(str, result_wan_dmz))
+            pdf.cell(0, 0, mystr)
+            pdf.ln(5)
         if result_dmz_wan == []:
             print("------------------")
             print("DMZ -> WAN status:")
             print("Your network (dmz->wan) was correctly configured")
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='DMZ => WAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Your network (dmz=>wan) was correctly configured')
+            pdf.ln(5)
         else:
             print("------------------")
             print("DMZ -> WAN status:")
@@ -333,10 +610,31 @@ while checker:
             print("we recommend that you close the following ports: ")
             print("dmz->wan: ", result_dmz_wan)
 
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='DMZ => WAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Dmz=>Wan analysis and recommended model are different')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Vulnerability Level (DAM): Low')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='we recommend that you close the following ports: ')
+            pdf.ln(5)
+            mystr = ', '.join(map(str, result_dmz_wan))
+            pdf.cell(0, 0, mystr)
+            pdf.ln(5)
+
         if result_dmz_lan == []:
             print("------------------")
             print("DMZ -> LAN status:")
             print("Your network (dmz->lan) was correctly configured")
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='DMZ => LAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Your network (dmz=>lan) was correctly configured')
+            pdf.ln(5)
         else:
             print("------------------")
             print("DMZ -> LAN status:")
@@ -344,10 +642,31 @@ while checker:
             print("Vulnerability Level (DAM): High")
             print("we recommend that you close the following ports: ")
             print("dmz->lan: ", result_dmz_lan)
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='DMZ => LAN status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Dmz=>Lan analysis and recommended model are different')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Vulnerability Level (DAM): High')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='we recommend that you close the following ports: ')
+            pdf.ln(5)
+            mystr = ', '.join(map(str, result_dmz_lan))
+            pdf.cell(0, 0, mystr)
+            pdf.ln(5)
         if result_lan_dmz == []:
             print("------------------")
             print("LAN -> DMZ status:")
             print("Your network (lan->dmz) was correctly configured")
+
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='LAN => DMZ status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Your network (lan=>dmz) was correctly configured')
+            pdf.ln(5)
         else:
             print("------------------")
             print("LAN -> DMZ status:")
@@ -356,5 +675,23 @@ while checker:
             print("we recommend that you close the following ports: ")
             print("lan->dmz: ", result_lan_dmz)
 
+            pdf.cell(0, 0, txt='------------------')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='LAN => DMZ status:')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Lan=>Dmz analysis and recommended model are different')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='Vulnerability Level (DAM): Medium')
+            pdf.ln(5)
+            pdf.cell(0, 0, txt='we recommend that you close the following ports: ')
+            pdf.ln(5)
+            mystr = ', '.join(map(str, result_lan_dmz))
+            pdf.cell(0, 0, mystr)
+            pdf.ln(5)
+
     else:
         print("ERROR, select one valid option")
+
+pdf.output('Castor_Report.pdf')
+print("------------------")
+print("Relatório Gerado")
