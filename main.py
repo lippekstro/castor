@@ -29,9 +29,6 @@ class PDF(FPDF):
         pdf.set_x(150)
         pdf.cell(0, 10, d, 0, 0, 'R')
 
-
-# C:\\Users\\felli\\Downloads\\dam_reports\\
-
 prompt = ">"
 checker = True
 
